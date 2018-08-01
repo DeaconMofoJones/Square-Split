@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<link rel="stylesheet" type="text/css" href="bubbles.css">
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/paper.js/0.11.5/paper-full.js"></script>
+	<script type="text/paperscript" canvas="myCanvas">
+
+		// var vector1 = new Point(50,50);
+		// var vector2 = new Point(54,0)
+		// var vector = vector1 - vector2;
+		// var ve = vector/vector1;
+		// console.log(ve)
+		var colorPalette = [
+			"#fe4848",
+			"#2ab8cb",
+			"#fed867",
+			"#e6e6ea",
+			"#f3f3f7"
+		]
+
+		var squares = []
+		addNewSquare();
+		function ranVal(maxVal){
+			return Math.floor(Math.random()*maxVal)
+		}
+		function genColor() {
+			return "rgba("+ranVal(255)+","+ranVal(255)+","+ranVal(255)+","+(0.1)+")"
+		}
+		function pickColor(paletteName){
+			return paletteName||colorPalette[Math.round(Math.random()*5)]
+		}
+		function addNewSquare(xpos,ypos,veloc){
+			function calcVel(clickPoint,direction) {
+				if (direction==="right"){
+					var vel = (clickPoint-path.position)/(path.size[0]/2);
+				} else {
+					var vel = -(clickPoint-path.position)/(path.size[0]/2);
+				}
+				console.log(clickPoint);
+				console.log(path.position+vel)
+				return vel;
+			}
+			var color = genColor();
+			// var color = pickColor();
+			var path = new Path.Rectangle({
+				position: [xpos || ranVal(500), ypos || ranVal(500)],
+				size: [75, 75],
+				strokeColor: "rgb(86, 255, 117)",
+				fillColor:"rgba(86, 255, 117, 0.1)",
+				delete:false,
+				velocity: veloc||[0,0],
+				onMouseDown: function(event){
+					// addNewSquare(event.point.x+(path.size[0]/2),event.point.y,calcVel(event.point,"right"));
+					addNewSquare(event.point.x,event.point.y,calcVel(event.point,"right"));
+					// addNewSquare(event.point.x-(path.size[0]/2),event.point.y,calcVel(event.point,"left"));
+					addNewSquare(event.point.x,event.point.y,calcVel(event.point,"left"));
+					path.delete=true;
+				}
+			});	
+			console.log(path.fillColor)
+			squares.push(path);
+		}
+
+
+		function onFrame(event) {
+			for (var i=0;i<squares.length;i++){
+				if (squares[i].delete) {
+					squares[i].remove();
+					squares.splice(i,1);
+					console.log(squares);
+				}
+				squares[i].position+=squares[i].velocity;
+			}
+		}
+		
+	</script>
+	<title>Square Split</title>
+</head>
+<body>
+	<canvas id="myCanvas" resize>
+	</canvas>
+</body>
+</html>
