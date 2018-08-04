@@ -4,7 +4,8 @@ html, body{
 }
 
 canvas {
-	background: #f4f7f5;
+	/*background: #f4f7f5;*/
+	background: black;
 	width: 100%;
 
 }
